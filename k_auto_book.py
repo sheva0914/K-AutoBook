@@ -5,10 +5,13 @@ import json
 import os
 import re
 from os import path
-from splinter import Browser
+# from splinter import Browser
+from splinter.driver.webdriver import BaseWebDriver
 from config import Config
 from ebookjapan.runner import Runner as Ebookjapan
 from alphapolis.runner import Runner as Alphapolis
+from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.options import Options
 
 
 def _load_config_data():
@@ -30,8 +33,16 @@ def _make_directory(directory):
 
 def _initialize_browser(config):
     log_name = path.join(config.log_directory, 'ghostdriver.log')
-    _browser = Browser(
-        config.driver, headless=True, user_agent=config.user_agent, service_log_path=log_name)
+
+    options = Options()
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+
+    # _browser = Browser(
+    #     config.driver, headless=True, user_agent=config.user_agent, service_log_path=log_name)
+    _browser = BaseWebDriver()
+    _browser.driver = Chrome(chrome_options=options)
     _width = config.window_size['width']
     _height = config.window_size['height']
     if config.driver == 'chrome':

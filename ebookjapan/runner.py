@@ -48,8 +48,10 @@ class Runner(AbstractRunner):
         ebookjapanの実行
         """
         try:
+            print('## check if login')
             if (self.config.ebookjapan.needs_login and
                     not self._is_login() and not self._login()):
+                print('## succeeded in loging')
                 return
         except Exception as err:
             _filename = 'login_error_%s.png' % datetime.now().strftime('%s')
@@ -82,12 +84,19 @@ class Runner(AbstractRunner):
         ログイン状態の確認を行う
         @return ログインしている場合に True を、していない場合に False を返す
         """
+        print('## _is_login was called')
         if Runner.is_login:
+            print('## _is_login: is_login true')
             return True
+        print('## _is_login: is_login false')
         self.browser.visit(self.url)
+        print('## _is_login: visited url')
+        print('## _is_login: ', self.browser.html())
         if len(self.browser.find_by_css('.login')) == 0:
+            print('## _is_login: login class was not found')
             Runner.is_login = True
             return True
+        print('## _is_login: login class was found')
         return False
 
     def _login(self):
@@ -95,16 +104,21 @@ class Runner(AbstractRunner):
         ログイン処理を行う
         @return ログイン成功時に True を返す
         """
+        print('## _login was called')
         if self.config.ebookjapan.username and self.config.ebookjapan.password:
+            print('## _login: username and password are specified')
             yahoo = YahooLogin(
                 self.browser,
                 self.config.ebookjapan.username,
                 self.config.ebookjapan.password)
         else:
+            print('## _login: no user info')
             yahoo = YahooLogin(self.browser)
         if yahoo.login():
+            print('## _login: succeeded in login')
             Runner.is_login = True
             return True
+        print('## _login: yahoo.login returned false')
         return False
 
     def _move_main_page(self):
