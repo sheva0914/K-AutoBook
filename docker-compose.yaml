@@ -1,0 +1,12 @@
+version: '3'
+services:
+  k-autobook:
+    build: ./
+    container_name: 'k-autobook'
+    working_dir: '/K-AutoBook'
+    tty: true
+    volumes:
+      - /tmp/files/:/data/
+      - /tmp/logs/:/tmp/k_auto_book/
+    command: ./k_auto_book.py
+    # command: ls -al /K-AutoBook/
